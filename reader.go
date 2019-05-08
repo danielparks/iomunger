@@ -1,9 +1,9 @@
 package iomunger
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"bytes"
 )
 
 type Reader struct {

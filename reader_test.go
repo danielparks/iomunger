@@ -50,5 +50,4 @@ func TestReaderShort(t *testing.T) {
 	}
 }
 
-
 /// FIXME TestReaderFailure
