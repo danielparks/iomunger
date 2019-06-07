@@ -11,7 +11,7 @@ func TestReaderPartial(t *testing.T) {
 	resultStr := []byte("ZbcZbc")
 	src := bytes.NewReader(testStr)
 
-	r := NewReader(src, byte('a'), byte('Z'))
+	r := NewReader(src, byte('a'), []byte("Z"))
 
 	b := make([]byte, 6)
 	read, err := r.Read(b)
@@ -19,7 +19,7 @@ func TestReaderPartial(t *testing.T) {
 		t.Errorf("Could not read: %v", err)
 		return
 	} else if read != 6 {
-		t.Errorf("Tried to read 6 bytes, but only got %d", read)
+		t.Errorf("Expected to read 6 bytes, but only got %d", read)
 		return
 	}
 
@@ -33,7 +33,7 @@ func TestReaderShort(t *testing.T) {
 	resultStr := []byte("ZbcZbc")
 	src := bytes.NewReader(testStr)
 
-	r := NewReader(src, byte('a'), byte('Z'))
+	r := NewReader(src, byte('a'), []byte("Z"))
 
 	b := make([]byte, 30)
 	read, err := r.Read(b)
@@ -41,7 +41,29 @@ func TestReaderShort(t *testing.T) {
 		t.Errorf("Could not read: %v", err)
 		return
 	} else if read != 6 {
-		t.Errorf("Tried to read 6 bytes, but got %d", read)
+		t.Errorf("Expected to read 6 bytes, but got %d", read)
+		return
+	}
+
+	if !reflect.DeepEqual(b[0:read], resultStr) {
+		t.Errorf("Expected %q, got %q", resultStr, b[0:read])
+	}
+}
+
+func TestReaderMultibyte(t *testing.T) {
+	testStr := []byte("abcabc")
+	resultStr := []byte("ZZbcZZbc")
+	src := bytes.NewReader(testStr)
+
+	r := NewReader(src, byte('a'), []byte("ZZ"))
+
+	b := make([]byte, 30)
+	read, err := r.Read(b)
+	if err != nil {
+		t.Errorf("Could not read: %v", err)
+		return
+	} else if read != 8 {
+		t.Errorf("Expected to read 8 bytes, but got %d", read)
 		return
 	}
 
